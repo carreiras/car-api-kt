@@ -9,20 +9,20 @@ import org.springframework.web.server.ResponseStatusException
 
 @Service
 @RestController
-@RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/passengers"], produces =[MediaType.APPLICATION_JSON_VALUE])
 class PassengerApi(val passengerRepository: PassengerRepository) {
 
-    @GetMapping("/passengers")
+    @GetMapping
     fun listPassengers() = passengerRepository.findAll()
 
-    @GetMapping("/passengers/{id}")
+    @GetMapping("/{id}")
     fun findPassenger(@PathVariable("id") id: Long) = passengerRepository.findById(id)
         .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
 
-    @PostMapping("/passengers")
+    @PostMapping
     fun createPassenger(@RequestBody passenger: Passenger): Passenger = passengerRepository.save(passenger)
 
-    @PutMapping("/passengers/{id}")
+    @PutMapping("/{id}")
     fun fullUpdatePassenger(@PathVariable("id") id: Long, @RequestBody passenger: Passenger): Passenger {
         val foundPassenger = findPassenger(id)
         val copyPassenger = foundPassenger.copy(
@@ -31,7 +31,7 @@ class PassengerApi(val passengerRepository: PassengerRepository) {
         return passengerRepository.save(copyPassenger)
     }
 
-    @PatchMapping("/passengers/{id}")
+    @PatchMapping("/{id}")
     fun incrementalUpdatePassenger(@PathVariable("id") id: Long, @RequestBody passenger: PathPassenger): Passenger {
         val foundPassenger = findPassenger(id)
         val copyPassenger = foundPassenger.copy(
@@ -40,6 +40,6 @@ class PassengerApi(val passengerRepository: PassengerRepository) {
         return passengerRepository.save(copyPassenger)
     }
 
-    @DeleteMapping("/passengers/{id}")
+    @DeleteMapping("/{id}")
     fun deletePassenger(@PathVariable("id") id: Long) = passengerRepository.delete(findPassenger(id))
 }

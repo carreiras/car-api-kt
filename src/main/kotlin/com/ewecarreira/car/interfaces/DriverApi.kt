@@ -11,20 +11,20 @@ import org.springframework.web.server.ResponseStatusException
 
 @Service
 @RestController
-@RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/drivers"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class DriverApi(val driverRepository: DriverRepository) {
 
-    @GetMapping("/drivers")
+    @GetMapping
     fun listDrivers() = driverRepository.findAll()
 
-    @GetMapping("/drivers/{id}")
+    @GetMapping("/{id}")
     fun findDriver(@PathVariable("id") id: Long) = driverRepository.findById(id)
         .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
 
-    @PostMapping("/drivers")
+    @PostMapping
     fun createDriver(@RequestBody driver: Driver): Driver = driverRepository.save(driver)
 
-    @PutMapping("/drivers/{id}")
+    @PutMapping("/{id}")
     fun fullUpdateDriver(@PathVariable("id") id: Long, @RequestBody driver: Driver): Driver {
         val foundDriver = findDriver(id)
         val copyDriver = foundDriver.copy(
@@ -34,7 +34,7 @@ class DriverApi(val driverRepository: DriverRepository) {
         return driverRepository.save(copyDriver)
     }
 
-    @PatchMapping("/drivers/{id}")
+    @PatchMapping("/{id}")
     fun incrementalUpdateDriver(@PathVariable("id") id: Long, @RequestBody driver: PathDriver): Driver {
         val foundDriver = findDriver(id)
         val copyDriver = foundDriver.copy(
@@ -44,6 +44,6 @@ class DriverApi(val driverRepository: DriverRepository) {
         return driverRepository.save(copyDriver)
     }
 
-    @DeleteMapping("/drivers/{id}")
+    @DeleteMapping("/{id}")
     fun deleteDriver(@PathVariable("id") id: Long) = driverRepository.delete(findDriver(id))
 }
